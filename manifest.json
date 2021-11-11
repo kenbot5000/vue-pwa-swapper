@@ -1,0 +1,10 @@
+{
+  "name": "FGO Swapper",
+  "short_name": "FGO Swap!",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/"
+}
