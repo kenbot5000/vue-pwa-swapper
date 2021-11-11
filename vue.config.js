@@ -1,13 +1,11 @@
 module.exports = {
   "pwa": {
-    "name": "Swappy",
-    "themeColor": "#42b983",
+    "name": "GudaFlip",
     "appMobileWebAppCache": "yes",
     "appleMobileWebAppCapable": "yes",
     "appleMobileWebAppStatusBarStyle": "black",
-    "manifestOptions": {
-      "background_color": "#42b983"
-    }
+    "themeColor": "fc852a",
+    "manifestPath": "manifest.json", 
   },
   "transpileDependencies": [
     "vuetify"
