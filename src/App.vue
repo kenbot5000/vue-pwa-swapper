@@ -51,8 +51,8 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
-      <v-img :src="require('@/assets/bg.jpg')" class="bg"></v-img>
+    <v-main class="main-app">
+      <!-- <v-img :src="require('@/assets/bg.jpg')" class="bg"></v-img> -->
       <v-row>
         <v-col>
           <v-card outlined>
@@ -170,9 +170,11 @@ export default {
 
 <style>
 .bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
+  object-fit: cover;
+}
+
+.main-app {
+  background-image: url('~@/assets/bg.jpg');
+  background-size: cover;
 }
 </style>
