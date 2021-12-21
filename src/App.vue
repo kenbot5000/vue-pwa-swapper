@@ -29,6 +29,43 @@
       </v-card>
       
     </v-dialog>
+    
+    <!-- High Score -->
+    <v-dialog v-model="scoreDialog" fullscreen>
+      <v-card>
+        <v-toolbar dark color="orange">
+          <v-btn icon dark @click="scoreDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>High Scores</v-toolbar-title>
+        </v-toolbar>
+          
+        <ol>
+          <li v-for="item in this.highScoreList" :key="item._id">
+            {{ item.username }} - {{ item.errorcount }}
+          </li>
+        </ol>
+      </v-card>
+    </v-dialog>
+
+    <!-- Score Saving -->
+    <v-dialog v-model="recordDialog">
+      <v-card>
+        <v-card-title>
+          Do you want to submit your score?
+        </v-card-title>
+        <v-row class="mx-4">
+          <v-col>
+            <v-text-field v-model="username" label="Name"></v-text-field>
+          </v-col>
+        </v-row>
+        <v-card-actions>
+          <v-btn color="success" @click="submitScore">Yes!</v-btn>
+          <v-btn color="error" @click="recordDialog = false">No thanks</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-app-bar app dense dark color="orange">
       <v-app-bar-nav-icon @click="nav = !nav">
         <v-icon>mdi-menu</v-icon>
@@ -42,6 +79,12 @@
             <v-icon>mdi-help</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Help</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scoreDialog = true">
+          <v-list-item-icon>
+            <v-icon>mdi-counter</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>High Scores</v-list-item-title>
         </v-list-item>
         <v-list-item @click="newGame">
           <v-list-item-icon>
@@ -84,6 +127,7 @@
 <script>
 import FlippableCard from '@/components/FlippableCard'
 import Snackbar from '@/components/Snackbar'
+import axios from 'axios';
 
 export default {
   name: 'App',
@@ -99,6 +143,10 @@ export default {
     flippedCards: [],
     matchedCards: [],
     mistakes: 0,
+    scoreDialog: false,
+    recordDialog: false,
+    username: '',
+    highScoreList: [],
   }),
   created () {
     this.newGame()
@@ -107,6 +155,17 @@ export default {
     cardsEmpty() {
       return this.flippedCards.length == 0;
     },
+  },
+  watch: {
+    async scoreDialog() {
+      if (this.scoreDialog) {
+        const res = await axios.get(`${process.env.VUE_APP_API_URL}/game/`);
+        this.highScoreList = res.data.res;
+        this.highScoreList.sort(function(a, b) {
+          return a.errorcount - b.errorcount;
+        });
+      }
+    }
   },
   methods: {
     shuffleArray() {
@@ -117,6 +176,17 @@ export default {
         let tmp = this.cards[curId];
         this.cards[curId] = this.cards[randId];
         this.cards[randId] = tmp;
+      }
+    },
+    async submitScore() {
+      const body = {
+        username: this.username,
+        errorcount: this.mistakes
+      }
+      const res = await axios.post(`${process.env.VUE_APP_API_URL}/game/`, body);
+      if (res) {
+        this.$refs.snackbar.sendMessage('Score submitted!')
+        this.recordDialog = false;
       }
     },
     newGame() {
@@ -143,6 +213,7 @@ export default {
             this.matchedCards.push(this.flippedCards[1])
             if(this.matchedCards.length == this.cards.length) {
               this.$refs.snackbar.sendMessage('YOU WIN!')
+              this.recordDialog = true;
             } else {
               this.$refs.snackbar.sendMessage('MATCH!')
             }

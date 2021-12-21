@@ -4,6 +4,9 @@ import './registerServiceWorker'
 import Vuetify from 'vuetify/lib'
 import vuetify from './plugins/vuetify';
 
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -12,3 +15,4 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(Vuetify)
+Vue.use(VueAxios, axios);
